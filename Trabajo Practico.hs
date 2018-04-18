@@ -1,3 +1,5 @@
+-- Definicion de tipos y de Data:
+
 data MicroControlador = MicroControlador [Posicion] AcumuladorA AcumuladorB ProgramCounter Etiqueta
 
 type Posicion = Int
@@ -5,6 +7,8 @@ type AcumuladorA = Int
 type AcumuladorB = Int
 type ProgramCounter = Int
 type Etiqueta = String
+
+-- Getters :
 
 posiciones :: MicroControlador -> [Int]
 posiciones (MicroControlador lista _ _ _ _) = lista
@@ -20,3 +24,4 @@ programCounter (MicroControlador _ _ _ pc _) = pc
 
 etiqueta :: MicroControlador -> String
 etiqueta (MicroControlador _ _ _ _ et) = et
+
