@@ -1,27 +1,22 @@
 -- Definicion de tipos y de Data:
 
-data MicroControlador = MicroControlador [Posicion] AcumuladorA AcumuladorB ProgramCounter Etiqueta
+data MicroControlador = UnMicroControlador {posiciones::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String} deriving (Show)
 
 type Posicion = Int
-type AcumuladorA = Int
-type AcumuladorB = Int
-type ProgramCounter = Int
-type Etiqueta = String
 
--- Getters :
+tuMami = UnMicroControlador {
+    posiciones = [1,2,3],
+    acumuladorA = 5,
+    acumuladorB = 7,
+    programCounter = 0,
+    etiqueta = "Hola"
 
-posiciones :: MicroControlador -> [Int]
-posiciones (MicroControlador lista _ _ _ _) = lista
+}
 
-acumuladorA :: MicroControlador -> Int
-acumuladorA (MicroControlador _ a _ _ _) = a
+nOP :: MicroControlador -> MicroControlador
+nOP (UnMicroControlador _ _ _ programCounter _) = UnMicroControlador { programCounter = incrementarPC microControlador}
 
-acumuladorB :: MicroControlador -> Int
-acumuladorB (MicroControlador _ _ b _ _) = b
+-- Funciones Auxiliares:
 
-programCounter :: MicroControlador -> Int
-programCounter (MicroControlador _ _ _ pc _) = pc
-
-etiqueta :: MicroControlador -> String
-etiqueta (MicroControlador _ _ _ _ et) = et
-
+incrementarPC :: MicroControlador -> Int
+incrementarPC microControlador = (programCounter microControlador) +1
