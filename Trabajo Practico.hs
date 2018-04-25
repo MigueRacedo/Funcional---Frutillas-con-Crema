@@ -4,6 +4,8 @@ data MicroControlador = UnMicroControlador {posiciones::[Posicion],acumuladorA::
 
 type Posicion = Int
 
+type Instruccion = MicroControlador -> MicroControlador
+
 xt8088 = UnMicroControlador {
     posiciones = [],
     acumuladorA = 0,
@@ -13,16 +15,16 @@ xt8088 = UnMicroControlador {
 
 }
 
-nop :: MicroControlador -> MicroControlador
+nop :: Instruccion
 nop microControlador = microControlador {programCounter = incrementarPC microControlador}
 
-add :: MicroControlador -> MicroControlador
+add :: Instruccion
 add microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
 
-divide :: MicroControlador -> MicroControlador
+divide :: Instruccion
 divide microControlador = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
 
-swap :: MicroControlador -> MicroControlador
+swap :: Instruccion
 swap microControlador = microControlador { acumuladorA = (acumuladorB microControlador), acumuladorB = (acumuladorA microControlador), programCounter = incrementarPC microControlador }
 
 --lod :: MicroControlador -> Int -> MicroControlador
@@ -31,7 +33,7 @@ swap microControlador = microControlador { acumuladorA = (acumuladorB microContr
 --str :: Microcontrolador -> Int -> Int -> MicroControlador
 --str microControlador addr val = microControlador {}
 
-lodv :: Int -> MicroControlador -> MicroControlador
+lodv :: Int -> Instruccion
 lodv val microControlador = microControlador {acumuladorA = val, programCounter = incrementarPC microControlador}
 
 -- Funciones Auxiliares:
