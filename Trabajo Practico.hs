@@ -73,7 +73,8 @@ sacarDeLista pos listaPos = (!!) listaPos pos
 
 -- Punto 3 : lodv 5 xt8088 -----> Correcto
 -- Punto 3.1 : swap fp20 -----> Correcto
--- Punto 3.2 : Correcto
+-- Punto 3.2 : (add.(lodv 22).swap.(lodv 10)) xt8088 ----> Correcto
+-- Punto 3.3 : (divide.(lod 1).swap.(lod 2).(str 2 0).(str 1 2)) xt8088
 
 -- Punto 4 : str 2 5 at8086 -----> Correcto
 -- Punto 4.1 : lod 2 xt8088 -----> Correcto
