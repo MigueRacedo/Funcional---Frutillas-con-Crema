@@ -13,14 +13,14 @@ xt8088 = UnMicroControlador {
 
 }
 
-nOP :: MicroControlador -> MicroControlador
-nOP microControlador = microControlador {programCounter = incrementarPC microControlador}
+nop :: MicroControlador -> MicroControlador
+nop microControlador = microControlador {programCounter = incrementarPC microControlador}
 
-aDD :: MicroControlador -> MicroControlador
-aDD microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
+add :: MicroControlador -> MicroControlador
+add microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
 
-dIV :: MicroControlador -> MicroControlador
-dIV microControlador = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
+divide :: MicroControlador -> MicroControlador
+divide microControlador = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
 
 swap :: MicroControlador -> MicroControlador
 swap microControlador = microControlador { acumuladorA = (acumuladorB microControlador), acumuladorB = (acumuladorA microControlador), programCounter = incrementarPC microControlador }
@@ -31,8 +31,8 @@ swap microControlador = microControlador { acumuladorA = (acumuladorB microContr
 --str :: Microcontrolador -> Int -> Int -> MicroControlador
 --str microControlador addr val = microControlador {}
 
-lODV :: MicroControlador -> Int -> MicroControlador
-lODV microControlador val = microControlador {acumuladorA = val, programCounter = incrementarPC microControlador}
+lodv :: Int -> MicroControlador -> MicroControlador
+lodv val microControlador = microControlador {acumuladorA = val, programCounter = incrementarPC microControlador}
 
 -- Funciones Auxiliares:
 
