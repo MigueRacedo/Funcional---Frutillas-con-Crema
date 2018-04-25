@@ -38,3 +38,7 @@ lodv val microControlador = microControlador {acumuladorA = val, programCounter 
 
 incrementarPC :: MicroControlador -> Int
 incrementarPC microControlador = (programCounter microControlador) +1
+
+-- Testing:
+
+--Punto 3.3 : (add.(lodv 22).swap.(lodv 10)) xt8088
