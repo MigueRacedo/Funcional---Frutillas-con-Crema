@@ -14,7 +14,7 @@ tuMami = UnMicroControlador {
 }
 
 nOP :: MicroControlador -> MicroControlador
-nOP microControlador = microControlador { programCounter = incrementarPC microControlador}
+nOP microControlador = incrementarPC microControlador
 
 aDD :: MicroControlador -> MicroControlador
 aDD microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0}
@@ -31,4 +31,4 @@ swap microControlador = microControlador { acumuladorA = (acumuladorB microContr
 -- Funciones Auxiliares:
 
 incrementarPC :: MicroControlador -> MicroControlador
-incrementarPC microControlador = microControlador {programCounter = programCounter + 1}
+incrementarPC microControlador = microControlador {programCounter = (programCounter microControlador) + 1}
