@@ -4,31 +4,37 @@ data MicroControlador = UnMicroControlador {posiciones::[Posicion],acumuladorA::
 
 type Posicion = Int
 
-tuMami = UnMicroControlador {
-    posiciones = [1,2,3],
-    acumuladorA = 5,
-    acumuladorB = 7,
+xt8088 = UnMicroControlador {
+    posiciones = [],
+    acumuladorA = 0,
+    acumuladorB = 0,
     programCounter = 0,
-    etiqueta = "Hola"
+    etiqueta = ""
 
 }
 
 nOP :: MicroControlador -> MicroControlador
-nOP microControlador = incrementarPC microControlador
+nOP microControlador = microControlador {programCounter = incrementarPC microControlador}
 
 aDD :: MicroControlador -> MicroControlador
-aDD microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0}
+aDD microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
 
 dIV :: MicroControlador -> MicroControlador
-dIV microControlador = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0}
+dIV microControlador = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
 
 swap :: MicroControlador -> MicroControlador
-swap microControlador = microControlador { acumuladorA = (acumuladorB microControlador), acumuladorB = (acumuladorA microControlador)}
+swap microControlador = microControlador { acumuladorA = (acumuladorB microControlador), acumuladorB = (acumuladorA microControlador), programCounter = incrementarPC microControlador }
 
 --lod :: MicroControlador -> Int -> MicroControlador
 --lod microControlador addr = microControlador {}
 
+--str :: Microcontrolador -> Int -> Int -> MicroControlador
+--str microControlador addr val = microControlador {}
+
+lODV :: MicroControlador -> Int -> MicroControlador
+lODV microControlador val = microControlador {acumuladorA = val, programCounter = incrementarPC microControlador}
+
 -- Funciones Auxiliares:
 
-incrementarPC :: MicroControlador -> MicroControlador
-incrementarPC microControlador = microControlador {programCounter = (programCounter microControlador) + 1}
+incrementarPC :: MicroControlador -> Int
+incrementarPC microControlador = (programCounter microControlador) +1
