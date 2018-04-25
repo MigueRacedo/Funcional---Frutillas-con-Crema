@@ -16,16 +16,16 @@ xt8088 = UnMicroControlador {
 }
 
 nop :: Instruccion
-nop microControlador = microControlador {programCounter = incrementarPC microControlador}
+nop microControlador = incrementarPC microControlador
 
 add :: Instruccion
-add microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
+add microControlador = (sumaryPonerEnA.incrementarPC) microControlador
 
 divide :: Instruccion
-divide microControlador = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0, programCounter = incrementarPC microControlador}
+divide microControlador = (dividirAcumuladores.incrementarPC) microControlador
 
 swap :: Instruccion
-swap microControlador = microControlador { acumuladorA = (acumuladorB microControlador), acumuladorB = (acumuladorA microControlador), programCounter = incrementarPC microControlador }
+swap microControlador = (intercambiarAcumuladores.incrementarPC) microControlador
 
 --lod :: MicroControlador -> Int -> MicroControlador
 --lod microControlador addr = microControlador {}
@@ -34,12 +34,24 @@ swap microControlador = microControlador { acumuladorA = (acumuladorB microContr
 --str microControlador addr val = microControlador {}
 
 lodv :: Int -> Instruccion
-lodv val microControlador = microControlador {acumuladorA = val, programCounter = incrementarPC microControlador}
+lodv val microControlador = ((setearAcumuladorA val).incrementarPC) microControlador
 
 -- Funciones Auxiliares:
 
-incrementarPC :: MicroControlador -> Int
-incrementarPC microControlador = (programCounter microControlador) +1
+incrementarPC :: MicroControlador -> MicroControlador
+incrementarPC microControlador = microControlador { programCounter = (programCounter microControlador) +1 }
+
+dividirAcumuladores :: MicroControlador -> MicroControlador
+dividirAcumuladores microControlador  = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0}
+
+setearAcumuladorA :: Int -> MicroControlador -> MicroControlador
+setearAcumuladorA val microControlador = microControlador {acumuladorA = val}
+
+intercambiarAcumuladores :: Instruccion
+intercambiarAcumuladores microControlador = microControlador { acumuladorA = (acumuladorB microControlador), acumuladorB = (acumuladorA microControlador)}
+
+sumaryPonerEnA :: Instruccion
+sumaryPonerEnA microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0}
 
 -- Testing:
 
