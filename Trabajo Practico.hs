@@ -24,7 +24,7 @@ add :: Instruccion
 add microControlador = (sumaryPonerEnA.incrementarPC) microControlador
 
 divide :: Instruccion 
-divide microControlador | ((acumuladorB microControlador)==0) = ((agregarEtiqueta "Division Por Cero").incrementarPC) microControlador
+divide microControlador | ((acumuladorB microControlador)==0) = ((modificarEtiqueta "Division Por Cero").incrementarPC) microControlador
                         | otherwise = (dividirAcumuladores.incrementarPC) microControlador
 
 swap :: Instruccion
@@ -41,8 +41,8 @@ lodv val microControlador = ((setearAcumuladorA val).incrementarPC) microControl
 
 -- Funciones Auxiliares:
 
-agregarEtiqueta :: String -> MicroInstruccion
-agregarEtiqueta etiq microControlador = microControlador { etiqueta = etiq}
+modificarEtiqueta :: String -> MicroInstruccion
+modificarEtiqueta etiq microControlador = microControlador { etiqueta = etiq}
 
 incrementarPC :: MicroInstruccion
 incrementarPC microControlador = microControlador { programCounter = (programCounter microControlador) +1 }
@@ -66,10 +66,10 @@ partirListaYColocarEn :: Int -> Int -> MicroInstruccion
 partirListaYColocarEn pos valor microControlador = microControlador {memoria = partirListaYAgregar pos valor (memoria microControlador)} 
 
 partirListaYAgregar :: Int -> Int -> [Int] -> [Int]
-partirListaYAgregar pos valor listaPos = (take (pos) listaPos) ++ [valor] ++ (drop (pos) listaPos)
+partirListaYAgregar pos valor listaPos = (take (pos-1) listaPos) ++ [valor] ++ (drop (pos-1) listaPos)
 
 sacarDeLista :: Int -> [Int] -> Int
-sacarDeLista pos listaPos = (!!) listaPos pos
+sacarDeLista pos listaPos = (!!) listaPos (pos-1)
 
 unMega :: [Posicion]
 unMega = (replicate 1024 0)
