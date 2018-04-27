@@ -1,6 +1,6 @@
 -- Definicion de tipos y de Data:
 
-data MicroControlador = UnMicroControlador {posiciones::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String} deriving (Eq,Show)
+data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String} deriving (Eq,Show)
 
 type Posicion = Int
 
@@ -9,7 +9,7 @@ type Instruccion = MicroControlador -> MicroControlador
 type MicroInstruccion = MicroControlador -> MicroControlador
 
 xt8088 = UnMicroControlador {
-    posiciones = (replicate 1024 0),
+    memoria = unMega,
     acumuladorA = 0,
     acumuladorB = 0,
     programCounter = 0,
@@ -23,14 +23,15 @@ nop microControlador = incrementarPC microControlador
 add :: Instruccion
 add microControlador = (sumaryPonerEnA.incrementarPC) microControlador
 
-divide :: Instruccion
-divide microControlador = (dividirAcumuladores.incrementarPC) microControlador
+divide :: Instruccion 
+divide microControlador | ((acumuladorB microControlador)==0) = ((agregarEtiqueta "Division Por Cero").incrementarPC) microControlador
+                        | otherwise = (dividirAcumuladores.incrementarPC) microControlador
 
 swap :: Instruccion
 swap microControlador = (intercambiarAcumuladores.incrementarPC) microControlador
 
 lod :: Int -> Instruccion
-lod addr microControlador = ((setearAcumuladorA (sacarDeLista addr (posiciones microControlador))).incrementarPC) microControlador
+lod addr microControlador = ((setearAcumuladorA (sacarDeLista addr (memoria microControlador))).incrementarPC) microControlador
 
 str :: Int -> Int -> Instruccion
 str addr val microControlador = ((partirListaYColocarEn addr val).incrementarPC) microControlador
@@ -39,6 +40,9 @@ lodv :: Int -> Instruccion
 lodv val microControlador = ((setearAcumuladorA val).incrementarPC) microControlador
 
 -- Funciones Auxiliares:
+
+agregarEtiqueta :: String -> MicroInstruccion
+agregarEtiqueta etiq microControlador = microControlador { etiqueta = etiq}
 
 incrementarPC :: MicroInstruccion
 incrementarPC microControlador = microControlador { programCounter = (programCounter microControlador) +1 }
@@ -59,13 +63,16 @@ sumaryPonerEnA :: MicroInstruccion
 sumaryPonerEnA microControlador = microControlador { acumuladorA = (acumuladorA microControlador + acumuladorB microControlador), acumuladorB = 0}
 
 partirListaYColocarEn :: Int -> Int -> MicroInstruccion
-partirListaYColocarEn pos valor microControlador = microControlador {posiciones = partirListaYAgregar pos valor (posiciones microControlador)} 
+partirListaYColocarEn pos valor microControlador = microControlador {memoria = partirListaYAgregar pos valor (memoria microControlador)} 
 
 partirListaYAgregar :: Int -> Int -> [Int] -> [Int]
-partirListaYAgregar pos valor listaPos = (take (pos-1) listaPos) ++ [valor] ++ (drop (pos-1) listaPos)
+partirListaYAgregar pos valor listaPos = (take (pos) listaPos) ++ [valor] ++ (drop (pos) listaPos)
 
 sacarDeLista :: Int -> [Int] -> Int
 sacarDeLista pos listaPos = (!!) listaPos pos
+
+unMega :: [Posicion]
+unMega = (replicate 1024 0)
 
 -- Testing / Casos de prueba:
 
@@ -82,7 +89,7 @@ sacarDeLista pos listaPos = (!!) listaPos pos
 -- Punto 4.3 : (divide.(setearAcumuladorA 12).(setearAcumuladorB 4)) xt8088 -----> Correcto
 
 fp20 = UnMicroControlador {
-    posiciones = (replicate 1024 0),
+    memoria = unMega,
     acumuladorA = 7,
     acumuladorB = 24,
     programCounter = 0,
@@ -90,7 +97,7 @@ fp20 = UnMicroControlador {
 }
 
 at8086 = UnMicroControlador {
-    posiciones = [1..20],
+    memoria = [1..20],
     acumuladorA = 0,
     acumuladorB = 0,
     programCounter = 0,
