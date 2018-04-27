@@ -69,7 +69,7 @@ partirListaYAgregar :: Int -> Int -> [Int] -> [Int]
 partirListaYAgregar pos valor listaPos = (take (pos-1) listaPos) ++ [valor] ++ (drop (pos-1) listaPos)
 
 sacarDeLista :: Int -> [Int] -> Int
-sacarDeLista pos listaPos = (!!) listaPos (pos-1)
+sacarDeLista pos listaPos = (!!) listaPos (pos)
 
 unMega :: [Posicion]
 unMega = (replicate 1024 0)
