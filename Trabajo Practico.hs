@@ -22,6 +22,18 @@ xt8088 = UnMicroControlador {
 
 }
 
+-- Programas:
+
+ejecutarPrograma microControlador programa = programa microControlador
+
+primerPrograma :: Programa
+primerPrograma microControlador = (add.(lodv 22).swap.(lodv 10)) microControlador
+
+segundoPrograma :: Programa
+segundoPrograma microControlador = (divide.(lod 1).swap.(lod 2).(str 2 0).(str 1 2)) microControlador
+
+-- Instrucciones:
+
 nop :: Instruccion
 nop microControlador = incrementarPC microControlador
 
