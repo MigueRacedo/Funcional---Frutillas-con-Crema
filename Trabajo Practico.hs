@@ -1,6 +1,8 @@
+import Text.Show.Functions
+
 -- Definicion de tipos y de Data:
 
-data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String} deriving (Eq,Show)
+data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programas::[Programa]} deriving (Show)
 
 type Posicion = Int
 
@@ -8,12 +10,15 @@ type Instruccion = MicroControlador -> MicroControlador
 
 type MicroInstruccion = MicroControlador -> MicroControlador
 
+type Programa = MicroControlador -> MicroControlador
+
 xt8088 = UnMicroControlador {
     memoria = unMega,
     acumuladorA = 0,
     acumuladorB = 0,
     programCounter = 0,
-    etiqueta = ""
+    etiqueta = "",
+    programas = []
 
 }
 
@@ -93,7 +98,8 @@ fp20 = UnMicroControlador {
     acumuladorA = 7,
     acumuladorB = 24,
     programCounter = 0,
-    etiqueta = ""
+    etiqueta = "",
+    programas = []
 }
 
 at8086 = UnMicroControlador {
@@ -101,5 +107,6 @@ at8086 = UnMicroControlador {
     acumuladorA = 0,
     acumuladorB = 0,
     programCounter = 0,
-    etiqueta = ""
+    etiqueta = "",
+    programas = []
 } 
