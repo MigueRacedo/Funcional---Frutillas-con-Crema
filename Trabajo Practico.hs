@@ -32,6 +32,11 @@ primerPrograma microControlador = (add.(lodv 22).swap.(lodv 10)) microControlado
 segundoPrograma :: Programa
 segundoPrograma microControlador = (divide.(lod 1).swap.(lod 2).(str 2 0).(str 1 2)) microControlador
 
+ifnz :: [Programa] -> MicroControlador -> MicroControlador
+ifnz lista micro
+                |((acumuladorA micro) /= 0) = foldl ejecutarPrograma micro lista
+                | otherwise = (modificarEtiqueta "Acumulador A es cero") micro
+
 -- Instrucciones:
 
 nop :: Instruccion
