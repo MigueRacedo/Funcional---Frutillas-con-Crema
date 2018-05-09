@@ -1,6 +1,8 @@
+import Text.Show.Functions
+
 -- Definicion de tipos y de Data:
 
-data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String} deriving (Eq,Show)
+data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programas::[Programa]} deriving (Show)
 
 type Posicion = Int
 
@@ -8,36 +10,57 @@ type Instruccion = MicroControlador -> MicroControlador
 
 type MicroInstruccion = MicroControlador -> MicroControlador
 
+type Programa = [Instruccion]
+
+
 xt8088 = UnMicroControlador {
     memoria = unMega,
     acumuladorA = 0,
     acumuladorB = 0,
     programCounter = 0,
-    etiqueta = ""
+    etiqueta = "",
+	programas = []
 
 }
 
+suma10y22 :: Programa                     
+suma10y22 = [lodv 10, swap, lodv 22, add] 
+
+suma :: Int -> Int -> Programa
+suma num1 num2 = [lodv num1, swap, lodv num2, add]
+
+division2por0 :: Programa                                
+division2por0 = [str 1 2,str 2 0,lod 2,swap,lod 1,divide]   
+
+division :: Int -> Int -> Programa
+division num1 num2 = [str 1 num1,str 2 num2,lod 2,swap,lod 1,divide]
+
+ejecutarPrograma :: MicroControlador -> Programa -> MicroControlador
+ejecutarPrograma micro programas = foldl (ejecutarInstruccion.incrementarPC) micro programas
+
+--Instrucciones:
+
 nop :: Instruccion
-nop microControlador = incrementarPC microControlador
+nop = id
 
 add :: Instruccion
-add microControlador = (sumaryPonerEnA.incrementarPC) microControlador
+add microControlador = sumaryPonerEnA microControlador
 
 divide :: Instruccion 
-divide microControlador | ((acumuladorB microControlador)==0) = ((modificarEtiqueta "Division Por Cero").incrementarPC) microControlador
-                        | otherwise = (dividirAcumuladores.incrementarPC) microControlador
+divide microControlador | ((acumuladorB microControlador)==0) = modificarEtiqueta "Division Por Cero" microControlador
+                        | otherwise = dividirAcumuladores microControlador
 
 swap :: Instruccion
-swap microControlador = (intercambiarAcumuladores.incrementarPC) microControlador
+swap microControlador = intercambiarAcumuladores microControlador
 
 lod :: Int -> Instruccion
-lod addr microControlador = ((setearAcumuladorA (sacarDeLista addr (memoria microControlador))).incrementarPC) microControlador
+lod addr microControlador = setearAcumuladorA (sacarDeLista addr (memoria microControlador)) microControlador
 
 str :: Int -> Int -> Instruccion
-str addr val microControlador = ((partirListaYColocarEn addr val).incrementarPC) microControlador
+str addr val microControlador = partirListaYColocarEn addr val microControlador
 
 lodv :: Int -> Instruccion
-lodv val microControlador = ((setearAcumuladorA val).incrementarPC) microControlador
+lodv val microControlador = setearAcumuladorA val microControlador
 
 -- Funciones Auxiliares:
 
@@ -45,7 +68,7 @@ modificarEtiqueta :: String -> MicroInstruccion
 modificarEtiqueta etiq microControlador = microControlador { etiqueta = etiq}
 
 incrementarPC :: MicroInstruccion
-incrementarPC microControlador = microControlador { programCounter = (programCounter microControlador) +1 }
+incrementarPC microControlador = microControlador { programCounter = (programCounter microControlador) + 1 }
 
 dividirAcumuladores :: MicroInstruccion
 dividirAcumuladores microControlador  = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0}
@@ -71,6 +94,9 @@ partirListaYAgregar pos valor listaPos = (take (pos-1) listaPos) ++ valor : (dro
 sacarDeLista :: Int -> [Int] -> Int
 sacarDeLista pos listaPos = (!!) listaPos (pos-1)
 
+ejecutarInstruccion :: MicroControlador -> Instruccion -> MicroControlador
+ejecutarInstruccion micro instruccion = instruccion $ micro
+
 unMega :: [Posicion]
 unMega = (replicate 1024 0)
 
@@ -93,7 +119,8 @@ fp20 = UnMicroControlador {
     acumuladorA = 7,
     acumuladorB = 24,
     programCounter = 0,
-    etiqueta = ""
+    etiqueta = "",
+	programas = []
 }
 
 at8086 = UnMicroControlador {
@@ -101,5 +128,6 @@ at8086 = UnMicroControlador {
     acumuladorA = 0,
     acumuladorB = 0,
     programCounter = 0,
-    etiqueta = ""
+    etiqueta = "",
+	programas = []
 } 
