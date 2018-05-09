@@ -2,15 +2,13 @@ import Text.Show.Functions
 
 -- Definicion de tipos y de Data:
 
-data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programas::[Programa]} deriving (Show)
+data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programas::[Instruccion]} deriving (Show)
 
 type Posicion = Int
 
 type Instruccion = MicroControlador -> MicroControlador
 
 type MicroInstruccion = MicroControlador -> MicroControlador
-
-type Programa = MicroControlador -> MicroControlador
 
 xt8088 = UnMicroControlador {
     memoria = unMega,
@@ -24,17 +22,14 @@ xt8088 = UnMicroControlador {
 
 -- Programas:
 
-ejecutarPrograma microControlador programa = programa microControlador
+ejecutarInstruccion microControlador instruccion = instruccion microControlador
 
-primerPrograma :: Programa
-primerPrograma microControlador = (add.(lodv 22).swap.(lodv 10)) microControlador
+ejecutarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador 
+ejecutarPrograma lista microControlador = foldl ejecutarInstruccion microControlador lista
 
-segundoPrograma :: Programa
-segundoPrograma microControlador = (divide.(lod 1).swap.(lod 2).(str 2 0).(str 1 2)) microControlador
-
-ifnz :: [Programa] -> MicroControlador -> MicroControlador
+ifnz :: [Instruccion] -> MicroControlador -> MicroControlador
 ifnz lista micro
-                |((acumuladorA micro) /= 0) = foldl ejecutarPrograma micro lista
+                |((acumuladorA micro) /= 0) = ejecutarPrograma lista micro
                 | otherwise = (modificarEtiqueta "Acumulador A es cero") micro
 
 -- Instrucciones:
