@@ -2,7 +2,7 @@ import Text.Show.Functions
 
 -- Definicion de tipos y de Data:
 
-data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programas::[Instruccion]} deriving (Show)
+data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programa::[Instruccion]} deriving (Show)
 
 type Posicion = Int
 
@@ -16,7 +16,7 @@ xt8088 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programas = []
+    programa = []
 
 }
 
@@ -24,12 +24,18 @@ xt8088 = UnMicroControlador {
 
 ejecutarInstruccion microControlador instruccion = instruccion microControlador
 
+--dejaTodoEnCero :: Instruccion -> Bool
+--dejaTodoEnCero instr micro = ((acumuladorA ==0)
+
+cargarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador
+cargarPrograma program microControlador = microControlador {programa = program }
+
 ejecutarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador 
-ejecutarPrograma lista microControlador = foldl (ejecutarInstruccion.incrementarPC) microControlador lista
+ejecutarPrograma program microControlador = foldl (ejecutarInstruccion.incrementarPC) microControlador program
 
 ifnz :: [Instruccion] -> MicroControlador -> MicroControlador
-ifnz lista micro
-                |((acumuladorA micro) /= 0) = ejecutarPrograma lista micro
+ifnz program micro
+                |((getAcumuladorA micro) /= 0) = ejecutarPrograma program micro
                 | otherwise = (modificarEtiqueta "Acumulador A es cero") micro
 
 -- Instrucciones:
@@ -41,7 +47,7 @@ add :: Instruccion
 add microControlador = sumaryPonerEnA microControlador
 
 divide :: Instruccion 
-divide microControlador | ((acumuladorB microControlador)==0) = (modificarEtiqueta "Division Por Cero") microControlador
+divide microControlador | ((==0) (getAcumuladorB microControlador)) = (modificarEtiqueta "Division Por Cero") microControlador
                         | otherwise = dividirAcumuladores microControlador
 
 swap :: Instruccion
@@ -58,6 +64,12 @@ lodv val microControlador = (setearAcumuladorA val) microControlador
 
 -- Funciones Auxiliares:
 
+getAcumuladorA :: MicroControlador -> Int
+getAcumuladorA micro = (acumuladorA micro)
+
+getAcumuladorB :: MicroControlador -> Int
+getAcumuladorB micro = (acumuladorB micro)
+
 modificarEtiqueta :: String -> MicroInstruccion
 modificarEtiqueta etiq microControlador = microControlador { etiqueta = etiq}
 
@@ -65,7 +77,7 @@ incrementarPC :: MicroInstruccion
 incrementarPC microControlador = microControlador { programCounter = (programCounter microControlador) +1 }
 
 dividirAcumuladores :: MicroInstruccion
-dividirAcumuladores microControlador  = microControlador { acumuladorA = (acumuladorA microControlador `div` acumuladorB microControlador), acumuladorB = 0}
+dividirAcumuladores microControlador  = microControlador { acumuladorA = ((getAcumuladorA microControlador) `div` (getAcumuladorB microControlador)), acumuladorB = 0}
 
 setearAcumuladorA :: Int -> MicroInstruccion
 setearAcumuladorA val microControlador = microControlador {acumuladorA = val}
@@ -111,7 +123,7 @@ fp20 = UnMicroControlador {
     acumuladorB = 24,
     programCounter = 0,
     etiqueta = "",
-    programas = []
+    programa = []
 }
 
 at8086 = UnMicroControlador {
@@ -120,5 +132,5 @@ at8086 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programas = []
+    programa = []
 } 
