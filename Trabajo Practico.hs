@@ -27,7 +27,7 @@ ejecutarInstruccion instruccion microControlador = instruccion microControlador
 ejecutarInstruccion2 microControlador instruccion = instruccion microControlador
 
 dejaTodoEnCero :: Instruccion -> MicroControlador -> Bool
-dejaTodoEnCero instr micro = (ambosAcumuladoresEnCero.(ejecutarInstruccion instr)) micro 
+dejaTodoEnCero instr micro = (ambosAcumuladoresEnCero.(ejecutarInstruccion instr)) micro  && (memoriaVacia.(ejecutarInstruccion instr)) micro 
 
 cargarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador
 cargarPrograma program microControlador = microControlador {programa = program }
@@ -65,6 +65,9 @@ lodv :: Int -> Instruccion
 lodv val microControlador = (setearAcumuladorA val) microControlador
 
 -- Funciones Auxiliares:
+
+memoriaVacia :: MicroControlador -> Bool
+memoriaVacia micro = all (== 0) (memoria micro)
 
 ambosAcumuladoresEnCero :: MicroControlador -> Bool
 ambosAcumuladoresEnCero micro = ((acumuladorA micro) == 0) && (acumuladorB micro) == 0
