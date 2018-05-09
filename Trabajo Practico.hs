@@ -44,7 +44,7 @@ ifnz program micro
                 |((acumuladorA micro) /= 0) = ejecutarPrograma program micro
                 | otherwise = (modificarEtiqueta "Acumulador A es cero") micro
 
--- Instrucciones:
+-- Instrucciones:s
 
 nop :: Instruccion
 nop microControlador = id microControlador
@@ -53,8 +53,8 @@ add :: Instruccion
 add microControlador = sumaryPonerEnA microControlador
 
 divide :: Instruccion 
-divide microControlador | ((acumuladorA microControlador) ==0) = (modificarEtiqueta "Division Por Cero") microControlador
-                        | otherwise = dividirAcumuladores microControlador
+divide microControlador | ((acumuladorA microControlador) /= 0) = dividirAcumuladores microControlador
+                        | otherwise = (modificarEtiqueta "Division Por Cero") microControlador
 
 swap :: Instruccion
 swap microControlador = intercambiarAcumuladores microControlador
