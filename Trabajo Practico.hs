@@ -1,4 +1,5 @@
 import Text.Show.Functions
+import Data.List
 
 -- Definicion de tipos y de Data:
 
@@ -21,6 +22,9 @@ xt8088 = UnMicroControlador {
 }
 
 -- Programas:
+
+estaOrdenadaLaMemoria :: MicroControlador -> Bool
+estaOrdenadaLaMemoria micro = (memoria micro) == (sort (memoria micro))
 
 ejecutarInstruccion instruccion microControlador = instruccion microControlador
 
@@ -65,6 +69,9 @@ lodv :: Int -> Instruccion
 lodv val microControlador = (setearAcumuladorA val) microControlador
 
 -- Funciones Auxiliares:
+
+ordenarMemoriaAscendente :: MicroControlador -> MicroControlador
+ordenarMemoriaAscendente micro = micro {memoria = (sort (memoria micro))}
 
 memoriaVacia :: MicroControlador -> Bool
 memoriaVacia micro = all (== 0) (memoria micro)
