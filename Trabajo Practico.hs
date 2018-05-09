@@ -25,7 +25,7 @@ xt8088 = UnMicroControlador {
 ejecutarInstruccion microControlador instruccion = instruccion microControlador
 
 ejecutarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador 
-ejecutarPrograma lista microControlador = foldl ejecutarInstruccion microControlador lista
+ejecutarPrograma lista microControlador = foldl (ejecutarInstruccion.incrementarPC) microControlador lista
 
 ifnz :: [Instruccion] -> MicroControlador -> MicroControlador
 ifnz lista micro
@@ -35,26 +35,26 @@ ifnz lista micro
 -- Instrucciones:
 
 nop :: Instruccion
-nop microControlador = incrementarPC microControlador
+nop microControlador = id microControlador
 
 add :: Instruccion
-add microControlador = (sumaryPonerEnA.incrementarPC) microControlador
+add microControlador = sumaryPonerEnA microControlador
 
 divide :: Instruccion 
-divide microControlador | ((acumuladorB microControlador)==0) = ((modificarEtiqueta "Division Por Cero").incrementarPC) microControlador
-                        | otherwise = (dividirAcumuladores.incrementarPC) microControlador
+divide microControlador | ((acumuladorB microControlador)==0) = (modificarEtiqueta "Division Por Cero") microControlador
+                        | otherwise = dividirAcumuladores microControlador
 
 swap :: Instruccion
-swap microControlador = (intercambiarAcumuladores.incrementarPC) microControlador
+swap microControlador = intercambiarAcumuladores microControlador
 
 lod :: Int -> Instruccion
-lod addr microControlador = ((setearAcumuladorA (sacarDeLista addr (memoria microControlador))).incrementarPC) microControlador
+lod addr microControlador = (setearAcumuladorA (sacarDeLista addr (memoria microControlador))) microControlador
 
 str :: Int -> Int -> Instruccion
-str addr val microControlador = ((partirListaYColocarEn addr val).incrementarPC) microControlador
+str addr val microControlador = partirListaYColocarEn addr val microControlador
 
 lodv :: Int -> Instruccion
-lodv val microControlador = ((setearAcumuladorA val).incrementarPC) microControlador
+lodv val microControlador = (setearAcumuladorA val) microControlador
 
 -- Funciones Auxiliares:
 
