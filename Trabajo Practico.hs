@@ -66,7 +66,7 @@ partirListaYColocarEn :: Int -> Int -> MicroInstruccion
 partirListaYColocarEn pos valor microControlador = microControlador {memoria = partirListaYAgregar pos valor (memoria microControlador)} 
 
 partirListaYAgregar :: Int -> Int -> [Int] -> [Int]
-partirListaYAgregar pos valor listaPos = (take (pos-1) listaPos) ++ [valor] ++ (drop (pos) listaPos)
+partirListaYAgregar pos valor listaPos = (take (pos-1) listaPos) ++ valor : (drop pos listaPos)
 
 sacarDeLista :: Int -> [Int] -> Int
 sacarDeLista pos listaPos = (!!) listaPos (pos-1)
