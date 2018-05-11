@@ -36,12 +36,12 @@ dejaTodoEnCero instr micro = (ambosAcumuladoresEnCero.(ejecutarInstruccion instr
 cargarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador
 cargarPrograma program microControlador = microControlador {programa = program }
 
-ejecutarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador 
-ejecutarPrograma program microControlador = foldl (ejecutarInstruccion2.incrementarPC) microControlador program
+ejecutarPrograma ::  MicroControlador -> MicroControlador 
+ejecutarPrograma microControlador = foldl (ejecutarInstruccion2.incrementarPC) microControlador (programa microControlador)
 
-ifnz :: [Instruccion] -> MicroControlador -> MicroControlador
-ifnz program micro
-                |((acumuladorA micro) /= 0) = ejecutarPrograma program micro
+ifnz :: MicroControlador -> MicroControlador
+ifnz micro
+                |((acumuladorA micro) /= 0) = ejecutarPrograma micro
                 | otherwise = (modificarEtiqueta "Acumulador A es cero") micro
 
 -- Instrucciones:s
