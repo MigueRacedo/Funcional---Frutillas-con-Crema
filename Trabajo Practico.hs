@@ -3,7 +3,7 @@ import Data.List
 
 -- Definicion de tipos y de Data:
 
-data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programas::[Programa]} deriving (Show)
+data MicroControlador = UnMicroControlador {memoria::[Posicion],acumuladorA::Int,acumuladorB::Int,programCounter::Int,etiqueta::String,programa::[Instruccion]} deriving (Show)
 
 type Posicion = Int
 
@@ -20,9 +20,11 @@ xt8088 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-	programas = []
+	programa = []
 
 }
+
+--SegundaEntrega:
 
 suma10y22 :: Programa                     
 suma10y22 = [lodv 10, swap, lodv 22, add] 
@@ -37,10 +39,22 @@ division :: Int -> Int -> Programa
 division num1 num2 = [str 1 num1,str 2 num2,lod 2,swap,lod 1,divide]
 
 cargarPrograma :: Programa -> MicroControlador -> MicroControlador
-cargarPrograma programa micro = micro {programas = programa : (programas micro)}
+cargarPrograma nuevoPrograma micro = micro {programa = nuevoPrograma}
 
-ejecutarPrograma :: MicroControlador -> Programa -> MicroControlador
-ejecutarPrograma micro programa = foldl (ejecutarInstruccion.incrementarPC) micro programa
+ejecutarPrograma :: MicroControlador -> MicroControlador
+ejecutarPrograma micro = foldl (ejecutarInstruccion.incrementarPC) micro (programa micro)
+
+ifnz :: Instruccion
+ifnz micro 
+		| ((acumuladorA micro) /= 0) = ejecutarPrograma micro
+		| otherwise = (modificarEtiqueta "Acumulador A es cero") micro
+		
+--depurarPrograma :: MicroControlador -> MicroControlador
+--depurarPrograma micro | not estaTodoEn0(ejecutarPrograma micro) =
+
+estaOrdenadaLaMemoria :: MicroControlador -> Bool
+estaOrdenadaLaMemoria micro = (memoria micro) == (sort (memoria micro))
+
 
 --Instrucciones:
 
@@ -101,6 +115,15 @@ sacarDeLista pos listaPos = (!!) listaPos (pos-1)
 ejecutarInstruccion :: MicroControlador -> Instruccion -> MicroControlador
 ejecutarInstruccion micro instruccion = instruccion $ micro
 
+estaTodoEn0 :: MicroControlador -> Bool
+estaTodoEn0 micro = (estaVaciaMemoria micro) && (estanEn0Acumuladores micro)
+
+estaVaciaMemoria :: MicroControlador -> Bool
+estaVaciaMemoria micro = all (==0) (memoria micro)
+
+estanEn0Acumuladores :: MicroControlador -> Bool
+estanEn0Acumuladores micro = ((acumuladorA micro) == 0) && ((acumuladorB micro) == 0)
+
 unMega :: [Posicion]
 unMega = (replicate 1024 0)
 
@@ -124,7 +147,7 @@ fp20 = UnMicroControlador {
     acumuladorB = 24,
     programCounter = 0,
     etiqueta = "",
-	programas = []
+	programa = []
 }
 
 at8086 = UnMicroControlador {
@@ -133,5 +156,5 @@ at8086 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-	programas = []
+	programa = []
 } 
