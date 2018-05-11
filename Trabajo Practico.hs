@@ -18,7 +18,7 @@ xt8088 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programa = [(lodv 5),divide,(str 1 50)]
+    programa = [(str 2 0),(str 1 3),(lodv 0),(lodv 133),nop, swap]
 
 }
 
@@ -30,10 +30,10 @@ estaOrdenadaLaMemoria micro = (memoria micro) == (sort (memoria micro))
 ejecutarSiNoHayError :: MicroControlador -> Instruccion -> MicroControlador
 ejecutarSiNoHayError microControlador instruccion 
                                                 | (noHayErrores microControlador) = (incrementarPC.instruccion) microControlador
-                                                | otherwise = id microControlador
+                                                | otherwise = microControlador
 
-dejaTodoEnCero :: Instruccion -> MicroControlador -> Bool
-dejaTodoEnCero instr micro = (ambosAcumuladoresEnCero.instr) micro  && (memoriaVacia.instr) micro 
+noDejaTodoEnCero :: MicroControlador -> Instruccion -> Bool
+noDejaTodoEnCero micro instr = not((ambosAcumuladoresEnCero.instr) micro)  || not((memoriaVacia.instr) micro)
 
 cargarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador
 cargarPrograma program microControlador = microControlador {programa = program }
@@ -41,11 +41,13 @@ cargarPrograma program microControlador = microControlador {programa = program }
 ejecutarPrograma ::  MicroControlador -> MicroControlador 
 ejecutarPrograma microControlador = foldl (ejecutarSiNoHayError) microControlador (programa microControlador)
 
+depurarPrograma :: [Instruccion] -> MicroControlador -> [Instruccion]
+depurarPrograma listaPos micro = filter (noDejaTodoEnCero micro) listaPos
 
 ifnz :: MicroControlador -> MicroControlador
 ifnz micro
                 |((acumuladorA micro) /= 0) = ejecutarPrograma micro
-                | otherwise = (modificarEtiqueta "Acumulador A es cero") micro
+                | otherwise = micro
 
 -- Instrucciones:s
 
