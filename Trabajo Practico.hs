@@ -167,3 +167,12 @@ microDesorden = UnMicroControlador {
     etiqueta = "",
 	programa = []
 } 
+
+microInfinito = UnMicroControlador {
+    memoria = [0..],
+    acumuladorA = 0,
+    acumuladorB = 0,
+    programCounter = 0,
+    etiqueta = "",
+    programa = []
+} 
