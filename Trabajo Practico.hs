@@ -1,4 +1,5 @@
 import Text.Show.Functions
+import Data.List
 
 -- Definicion de tipos y de Data:
 
@@ -35,8 +36,11 @@ division2por0 = [str 1 2,str 2 0,lod 2,swap,lod 1,divide]
 division :: Int -> Int -> Programa
 division num1 num2 = [str 1 num1,str 2 num2,lod 2,swap,lod 1,divide]
 
+cargarPrograma :: Programa -> MicroControlador -> MicroControlador
+cargarPrograma programa micro = micro {programas = programa : (programas micro)}
+
 ejecutarPrograma :: MicroControlador -> Programa -> MicroControlador
-ejecutarPrograma micro programas = foldl (ejecutarInstruccion.incrementarPC) micro programas
+ejecutarPrograma micro programa = foldl (ejecutarInstruccion.incrementarPC) micro programa
 
 --Instrucciones:
 
