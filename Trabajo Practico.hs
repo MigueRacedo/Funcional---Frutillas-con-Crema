@@ -11,13 +11,14 @@ type Instruccion = MicroControlador -> MicroControlador
 
 type MicroInstruccion = MicroControlador -> MicroControlador
 
+
 xt8088 = UnMicroControlador {
     memoria = unMega,
     acumuladorA = 0,
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programa = []
+    programa = [divide,(lod 1),swap,(lod 2),(str 2 0),(str 1 2)]
 
 }
 
@@ -35,7 +36,9 @@ cargarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador
 cargarPrograma program microControlador = microControlador {programa = program }
 
 ejecutarPrograma ::  MicroControlador -> MicroControlador 
-ejecutarPrograma microControlador = foldl (ejecutarInstruccion.incrementarPC) microControlador (programa microControlador)
+ejecutarPrograma microControlador 
+                                | (noHayErrores microControlador) = foldl (ejecutarInstruccion.incrementarPC) microControlador (programa microControlador)
+                                | otherwise = id microControlador
 
 ifnz :: MicroControlador -> MicroControlador
 ifnz micro
@@ -67,6 +70,9 @@ lodv :: Int -> Instruccion
 lodv val microControlador = (setearAcumuladorA val) microControlador
 
 -- Funciones Auxiliares:
+
+noHayErrores :: MicroControlador -> Bool
+noHayErrores micro = (etiqueta micro == "")
 
 ordenarMemoriaAscendente :: MicroControlador -> MicroControlador
 ordenarMemoriaAscendente micro = micro {memoria = (sort (memoria micro))}
