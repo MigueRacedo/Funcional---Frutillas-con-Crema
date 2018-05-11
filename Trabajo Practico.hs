@@ -18,7 +18,7 @@ xt8088 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programa = [divide,(lod 1),swap,(lod 2),(str 2 0),(str 1 2)]
+    programa = [(str 1 2),(str 2 0),(lod 2),swap,(lod 1),divide]
 
 }
 
@@ -54,7 +54,7 @@ add :: Instruccion
 add microControlador = sumaryPonerEnA microControlador
 
 divide :: Instruccion 
-divide microControlador | ((acumuladorA microControlador) /= 0) = dividirAcumuladores microControlador
+divide microControlador | ((acumuladorB microControlador) /= 0) = dividirAcumuladores microControlador
                         | otherwise = (modificarEtiqueta "Division Por Cero") microControlador
 
 swap :: Instruccion
