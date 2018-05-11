@@ -158,3 +158,12 @@ at8086 = UnMicroControlador {
     etiqueta = "",
 	programa = []
 } 
+
+microDesorden = UnMicroControlador {
+    memoria = [2,5,1,0,6,9],
+    acumuladorA = 0,
+    acumuladorB = 0,
+    programCounter = 0,
+    etiqueta = "",
+	programa = []
+} 
