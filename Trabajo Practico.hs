@@ -18,7 +18,7 @@ xt8088 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programa = [(str 1 2),(str 2 0),(lod 2),swap,(lod 1),divide]
+    programa = [(lodv 5),divide,(str 1 50)]
 
 }
 
@@ -27,7 +27,10 @@ xt8088 = UnMicroControlador {
 estaOrdenadaLaMemoria :: MicroControlador -> Bool
 estaOrdenadaLaMemoria micro = (memoria micro) == (sort (memoria micro))
 
-ejecutarInstruccion microControlador instruccion = instruccion microControlador
+ejecutarSiNoHayError :: MicroControlador -> Instruccion -> MicroControlador
+ejecutarSiNoHayError microControlador instruccion 
+                                                | (noHayErrores microControlador) = (incrementarPC.instruccion) microControlador
+                                                | otherwise = id microControlador
 
 dejaTodoEnCero :: Instruccion -> MicroControlador -> Bool
 dejaTodoEnCero instr micro = (ambosAcumuladoresEnCero.instr) micro  && (memoriaVacia.instr) micro 
@@ -36,9 +39,8 @@ cargarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador
 cargarPrograma program microControlador = microControlador {programa = program }
 
 ejecutarPrograma ::  MicroControlador -> MicroControlador 
-ejecutarPrograma microControlador 
-                                | (noHayErrores microControlador) = foldl (ejecutarInstruccion.incrementarPC) microControlador (programa microControlador)
-                                | otherwise = id microControlador
+ejecutarPrograma microControlador = foldl (ejecutarSiNoHayError) microControlador (programa microControlador)
+
 
 ifnz :: MicroControlador -> MicroControlador
 ifnz micro
