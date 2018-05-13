@@ -147,21 +147,22 @@ unMega = (replicate 1024 0)
 -- Casos de prueba Entrega 2:
 
 -- 4.2 : 
---  4.2.1: EjecutarPrograma suma de 10+22 en xt8088 ------> Correcto
---  4.2.2: EjecutarPrograma de division por cero en xt8088 ------> Correcto
+--  4.2.1: EjecutarPrograma suma de 10+22 en xt8088 ------> acumuladorA = 32 , acumuladorB = 0, programCounter = 4 -----> Correcto
+--  4.2.2: EjecutarPrograma de division por cero en xt8088 ------> acumuladorA = 2 , acumuladorB = 0 , programCounter = 6 , etiqueta = "Division por cero" , memoria = [2,0,...] ----> Correcto
 
 -- 4.3:
---  4.3.1: ifnz ((lodv 3),swap) fp20 -----> Correcto
---  4.3.2: ifnz ((lodv 3),swap) xt8088 -----> Correcto
+--  4.3.1: ifnz ((lodv 3),swap) fp20 -----> acumuladorA = 24 , acumuladorB = 3 -----> Correcto
+--  4.3.2: ifnz ((lodv 3),swap) xt8088 -----> acumuladorA = acumuladorB = 0 ----> Correcto
 
 -- 4.4
 --  4.4.1: depurarPrograma [((str 2 0),(str 1 3),(lodv 0),(lodv 133),(nop),(swap))] xt8088 ----> Correcto
 
+-- 4.5
+--  4.5.1: estaOrdenadaLaMemoria xt8088 ----> True ----> Correcto
+--  4.5.2: estaOrdenadaLaMemoria xt8088 ----> False ----> Correcto
 
 
-
-
-
+-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 -- ENTREGA 1:
@@ -197,3 +198,12 @@ at8086 = UnMicroControlador {
     etiqueta = "",
     programa = []
 } 
+
+microDesorden = UnMicroControlador {
+    memoria = [2,5,1,0,6,9],
+    acumuladorA = 0,
+    acumuladorB = 0,
+    programCounter = 0,
+    etiqueta = "",
+    programa = []
+}
