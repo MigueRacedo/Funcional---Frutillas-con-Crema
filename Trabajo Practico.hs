@@ -18,7 +18,7 @@ xt8088 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programa = [(str 1 2),(str 2 0),(lod 2),swap,(lod 1),divide]
+    programa = [(lodv 3),swap]
 
 }
 
@@ -150,6 +150,13 @@ unMega = (replicate 1024 0)
 --  4.2.1: EjecutarPrograma suma de 10+22 en xt8088 ------> Correcto
 --  4.2.2: EjecutarPrograma de division por cero en xt8088 ------> Correcto
 
+-- 4.3:
+--  4.3.1: ifnz ((lodv 3),swap) fp20 -----> Correcto
+--  4.3.2: ifnz ((lodv 3),swap) xt8088 -----> Correcto
+
+-- 4.4
+--  4.4.1: depurarPrograma [((str 2 0),(str 1 3),(lodv 0),(lodv 133),(nop),(swap))] xt8088 ----> Correcto
+
 
 
 
@@ -179,7 +186,7 @@ fp20 = UnMicroControlador {
     acumuladorB = 24,
     programCounter = 0,
     etiqueta = "",
-    programa = []
+    programa = [(lodv 3), swap]
 }
 
 at8086 = UnMicroControlador {
