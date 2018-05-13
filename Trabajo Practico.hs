@@ -18,8 +18,19 @@ xt8088 = UnMicroControlador {
     acumuladorB = 0,
     programCounter = 0,
     etiqueta = "",
-    programa = [(str 2 0),(str 1 3),(lodv 0),(lodv 133),nop, swap]
+    programa = [(str 1 2),(str 2 0),(lod 2),swap,(lod 1),divide]
 
+}
+
+-- (str 2 0),(str 1 3),(lodv 0),(lodv 133),nop, swap
+
+memoriaInfinita = UnMicroControlador {
+    memoria = infinitaEnCero,
+    acumuladorA = 25,
+    acumuladorB = 50,
+    programCounter = 0,
+    etiqueta = "",
+    programa = [add,(lodv 22),swap,(lodv 10)]
 }
 
 -- Programas:
@@ -75,6 +86,9 @@ lodv val microControlador = (setearAcumuladorA val) microControlador
 
 -- Funciones Auxiliares:
 
+infinitaEnCero :: [Posicion]
+infinitaEnCero = (repeat 0)
+
 noHayErrores :: MicroControlador -> Bool
 noHayErrores micro = (etiqueta micro == "")
 
@@ -119,6 +133,31 @@ sacarDeLista pos listaPos = (!!) listaPos (pos-1)
 
 unMega :: [Posicion]
 unMega = (replicate 1024 0)
+
+
+-- ENTREGA 2:
+
+-- Puntos Teoricos 3.6
+
+-- ¿Qué sucede al querer cargar y ejecutar el programa que suma 10 y 22 en el procesador con memoria infinita? : Se ejecuta normalmente, ya que no implica ningun acceso a la memoria infinita.
+
+-- ¿Y si queremos saber si la memoria está ordenada (punto anterior)? : Va a quedar infinitamente esperando ,ya que siempre esta buscando un valor entero mayor al actual para comprobar que todo este 
+-- ordenado de forma creciente-
+
+-- Casos de prueba Entrega 2:
+
+-- 4.2 : 
+--  4.2.1: EjecutarPrograma suma de 10+22 en xt8088 ------> Correcto
+--  4.2.2: EjecutarPrograma de division por cero en xt8088 ------> Correcto
+
+
+
+
+
+
+
+
+-- ENTREGA 1:
 
 -- Testing / Casos de prueba:
 
