@@ -36,31 +36,31 @@ memoriaInfinita = UnMicroControlador {
 -- Programas:
 
 estaOrdenadaLaMemoria :: MicroControlador -> Bool
-estaOrdenadaLaMemoria micro = (memoria micro) == (sort (memoria micro))
+estaOrdenadaLaMemoria micro = (memoria micro) == sort (memoria micro)
 
 ejecutarSiNoHayError :: MicroControlador -> Instruccion -> MicroControlador
 ejecutarSiNoHayError microControlador instruccion 
-                                                | (noHayErrores microControlador) = (incrementarPC.instruccion) microControlador
+                                                | noHayErrores microControlador = (incrementarPC.instruccion) microControlador
                                                 | otherwise = microControlador
 
-noDejaTodoEnCero :: MicroControlador -> Instruccion -> Bool
-noDejaTodoEnCero micro instr = not((ambosAcumuladoresEnCero.instr) micro)  || not((memoriaVacia.instr) micro)
+dejaTodoEnCero :: MicroControlador -> Instruccion -> Bool
+dejaTodoEnCero micro instr = (ambosAcumuladoresEnCero.instr) micro  && (memoriaVacia.instr) micro
 
 cargarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador
 cargarPrograma program microControlador = microControlador {programa = program }
 
-ejecutarPrograma ::  MicroControlador -> MicroControlador 
-ejecutarPrograma microControlador = foldl (ejecutarSiNoHayError) microControlador (programa microControlador)
+ejecutarPrograma :: [Instruccion] -> MicroControlador -> MicroControlador 
+ejecutarPrograma listaInstr microControlador = foldl (ejecutarSiNoHayError) microControlador listaInstr
 
 depurarPrograma :: [Instruccion] -> MicroControlador -> [Instruccion]
-depurarPrograma listaPos micro = filter (noDejaTodoEnCero micro) listaPos
+depurarPrograma listaInstr micro = filter (not.dejaTodoEnCero micro) listaInstr
 
-ifnz :: MicroControlador -> MicroControlador
-ifnz micro
-                |((acumuladorA micro) /= 0) = ejecutarPrograma micro
+ifnz :: [Instruccion] -> MicroControlador -> MicroControlador
+ifnz listaInstr micro
+                | (acumuladorA micro) /= 0 = (ejecutarPrograma.(cargarPrograma listaInstr)) listaInstr micro
                 | otherwise = micro
 
--- Instrucciones:s
+-- Instrucciones:
 
 nop :: Instruccion
 nop microControlador = id microControlador
@@ -69,37 +69,40 @@ add :: Instruccion
 add microControlador = sumaryPonerEnA microControlador
 
 divide :: Instruccion 
-divide microControlador | ((acumuladorB microControlador) /= 0) = dividirAcumuladores microControlador
-                        | otherwise = (modificarEtiqueta "Division Por Cero") microControlador
+divide microControlador | acumuladorB microControlador /= 0 = dividirAcumuladores microControlador
+                        | otherwise = modificarEtiqueta "Division Por Cero" microControlador
 
 swap :: Instruccion
 swap microControlador = intercambiarAcumuladores microControlador
 
 lod :: Int -> Instruccion
-lod addr microControlador = (setearAcumuladorA (sacarDeLista addr (memoria microControlador))) microControlador
+lod addr microControlador = microControlador{ acumuladorA = sacarDeLista addr (memoria microControlador)}
 
 str :: Int -> Int -> Instruccion
 str addr val microControlador = partirListaYColocarEn addr val microControlador
 
 lodv :: Int -> Instruccion
-lodv val microControlador = (setearAcumuladorA val) microControlador
+lodv val microControlador = microControlador {acumuladorA = val}
 
 -- Funciones Auxiliares:
 
+ordenarMemoria :: [Int] -> [Int]
+ordenarMemoria [] = []
+ordenarMemoria (x:y:xs) 
+                        | y > x = ordenarMemoria (y:xs)
+                        | otherwise = ordenarMemoria (x:xs)
+
 infinitaEnCero :: [Posicion]
-infinitaEnCero = (repeat 0)
+infinitaEnCero = repeat 0
 
 noHayErrores :: MicroControlador -> Bool
-noHayErrores micro = (etiqueta micro == "")
-
-ordenarMemoriaAscendente :: MicroControlador -> MicroControlador
-ordenarMemoriaAscendente micro = micro {memoria = (sort (memoria micro))}
+noHayErrores micro = etiqueta micro == ""
 
 memoriaVacia :: MicroControlador -> Bool
 memoriaVacia micro = all (== 0) (memoria micro)
 
 ambosAcumuladoresEnCero :: MicroControlador -> Bool
-ambosAcumuladoresEnCero micro = ((acumuladorA micro) == 0) && (acumuladorB micro) == 0
+ambosAcumuladoresEnCero micro = (acumuladorA micro) == 0 && (acumuladorB micro) == 0
 
 modificarEtiqueta :: String -> MicroInstruccion
 modificarEtiqueta etiq microControlador = microControlador { etiqueta = etiq}
@@ -108,13 +111,7 @@ incrementarPC :: MicroInstruccion
 incrementarPC microControlador = microControlador { programCounter = (programCounter microControlador) +1 }
 
 dividirAcumuladores :: MicroInstruccion
-dividirAcumuladores microControlador  = microControlador { acumuladorA = ((acumuladorA microControlador) `div` (acumuladorB microControlador)), acumuladorB = 0}
-
-setearAcumuladorA :: Int -> MicroInstruccion
-setearAcumuladorA val microControlador = microControlador {acumuladorA = val}
-
-setearAcumuladorB :: Int -> MicroInstruccion
-setearAcumuladorB val microControlador = microControlador { acumuladorB = val}
+dividirAcumuladores microControlador  = microControlador { acumuladorA = (acumuladorA microControlador) `div` (acumuladorB microControlador), acumuladorB = 0}
 
 intercambiarAcumuladores :: MicroInstruccion
 intercambiarAcumuladores microControlador = microControlador { acumuladorA = (acumuladorB microControlador), acumuladorB = (acumuladorA microControlador)}
@@ -126,10 +123,10 @@ partirListaYColocarEn :: Int -> Int -> MicroInstruccion
 partirListaYColocarEn pos valor microControlador = microControlador {memoria = partirListaYAgregar pos valor (memoria microControlador)} 
 
 partirListaYAgregar :: Int -> Int -> [Int] -> [Int]
-partirListaYAgregar pos valor listaPos = (take (pos-1) listaPos) ++ [valor] ++ (drop (pos) listaPos)
+partirListaYAgregar pos valor listaNum = (take (pos-1) listaNum) ++ [valor] ++ (drop (pos) listaNum)
 
 sacarDeLista :: Int -> [Int] -> Int
-sacarDeLista pos listaPos = (!!) listaPos (pos-1)
+sacarDeLista pos listaNum = (!!) listaNum (pos-1)
 
 unMega :: [Posicion]
 unMega = (replicate 1024 0)
