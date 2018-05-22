@@ -36,7 +36,7 @@ memoriaInfinita = UnMicroControlador {
 -- Programas:
 
 estaOrdenadaLaMemoria :: MicroControlador -> Bool
-estaOrdenadaLaMemoria micro = (memoria micro) == sort (memoria micro)
+estaOrdenadaLaMemoria micro = (memoria micro) == (sort.memoria) micro
 
 ejecutarSiNoHayError :: MicroControlador -> Instruccion -> MicroControlador
 ejecutarSiNoHayError microControlador instruccion 
@@ -57,7 +57,7 @@ depurarPrograma listaInstr micro = filter (not.dejaTodoEnCero micro) listaInstr
 
 ifnz :: [Instruccion] -> MicroControlador -> MicroControlador
 ifnz listaInstr micro
-                | (acumuladorA micro) /= 0 = (ejecutarPrograma.(cargarPrograma listaInstr)) listaInstr micro
+                | ((acumuladorA micro) /= 0) = (ejecutarPrograma) listaInstr micro
                 | otherwise = micro
 
 -- Instrucciones:
@@ -96,7 +96,7 @@ infinitaEnCero :: [Posicion]
 infinitaEnCero = repeat 0
 
 noHayErrores :: MicroControlador -> Bool
-noHayErrores micro = etiqueta micro == ""
+noHayErrores micro = ((== "").etiqueta) micro
 
 memoriaVacia :: MicroControlador -> Bool
 memoriaVacia micro = all (== 0) (memoria micro)
