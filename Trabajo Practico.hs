@@ -35,8 +35,8 @@ memoriaInfinita = UnMicroControlador {
 
 -- Programas:
 
-estaOrdenadaLaMemoria :: MicroControlador -> Bool
-estaOrdenadaLaMemoria micro = (memoria micro) == (sort.memoria) micro
+estaOrdenadaLaMemoriaDelMicro :: MicroControlador -> Bool
+estaOrdenadaLaMemoriaDelMicro micro = estaOrdenadaLaMemoria (memoria micro)
 
 ejecutarSiNoHayError :: MicroControlador -> Instruccion -> MicroControlador
 ejecutarSiNoHayError microControlador instruccion 
@@ -86,11 +86,10 @@ lodv val microControlador = microControlador {acumuladorA = val}
 
 -- Funciones Auxiliares:
 
-ordenarMemoria :: [Int] -> [Int]
-ordenarMemoria [] = []
-ordenarMemoria (x:y:xs) 
-                        | y > x = ordenarMemoria (y:xs)
-                        | otherwise = ordenarMemoria (x:xs)
+estaOrdenadaLaMemoria :: [Int] -> Bool
+estaOrdenadaLaMemoria [] = True
+estaOrdenadaLaMemoria [x] = True
+estaOrdenadaLaMemoria (x:xs) = x <= minimum xs
 
 infinitaEnCero :: [Posicion]
 infinitaEnCero = repeat 0
