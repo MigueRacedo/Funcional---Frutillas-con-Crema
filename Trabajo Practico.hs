@@ -89,7 +89,9 @@ lodv val microControlador = microControlador {acumuladorA = val}
 estaOrdenadaLaMemoria :: [Int] -> Bool
 estaOrdenadaLaMemoria [] = True
 estaOrdenadaLaMemoria [x] = True
-estaOrdenadaLaMemoria (x:xs) = x <= minimum xs
+estaOrdenadaLaMemoria (x:xs)
+                            | x <= minimum xs = estaOrdenadaLaMemoria xs
+                            | otherwise = False
 
 infinitaEnCero :: [Posicion]
 infinitaEnCero = repeat 0
